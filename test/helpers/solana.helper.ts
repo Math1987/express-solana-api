@@ -27,9 +27,9 @@ export const initKeypairs = async () : Promise<void> => {
         const signature = await connection.requestAirdrop(keypair1.publicKey, web3.LAMPORTS_PER_SOL);
         await connection.confirmTransaction(signature);
         sols = await connection.getBalance(keypair1.publicKey) ;
-        console.log('new sol balance for keypair1', sols/web3.LAMPORTS_PER_SOL );
+        console.log('new sol balance for keypair1', sols/web3.LAMPORTS_PER_SOL + " sol" );
     }
-    console.log('kepair1 created', sols/web3.LAMPORTS_PER_SOL );
+    console.log('kepair1 created', sols/web3.LAMPORTS_PER_SOL + " sol");
     //@ts-ignore 
     const key2 = JSON.parse( fs.readFileSync(path.join(__dirname, 'keypairs/key2')) ) ;
     keypair2 = web3.Keypair.fromSecretKey( Uint8Array.from(key2));
@@ -38,9 +38,9 @@ export const initKeypairs = async () : Promise<void> => {
         const signature = await connection.requestAirdrop(keypair2.publicKey, web3.LAMPORTS_PER_SOL);
         await connection.confirmTransaction(signature);
         sols2 = await connection.getBalance(keypair2.publicKey) ;
-        console.log('new sol balance for keypair2', sols2/web3.LAMPORTS_PER_SOL );
+        console.log('new sol balance for keypair2', sols2/web3.LAMPORTS_PER_SOL + " sol" );
     }
-    console.log('kepair2 created',  sols2/web3.LAMPORTS_PER_SOL );
+    console.log('kepair2 created',  sols2/web3.LAMPORTS_PER_SOL + " sol");
 
     // keypair1 = await createKeypair();
     // keypair2 = await createKeypair();

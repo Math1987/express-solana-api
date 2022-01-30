@@ -1,11 +1,14 @@
 
 import { Connection, clusterApiUrl, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js" ;
 import environment from "../environment" ;
+import bs58 from "bs58" ;
+import nacl from "tweetnacl" ;
 
 export let connection : Connection ;
 
 export const connect = async () : Promise<Connection> => {
-    return connection = await new Connection(clusterApiUrl("devnet"));
+    console.log('Connect on solana cluster', environment.solana.cluster);
+    return connection = await new Connection(clusterApiUrl(environment.solana.cluster));
 }
 
 export type SimpleTransferTransaction = {
@@ -30,6 +33,15 @@ export const readSimpleTransferTransaction = async ( signature : string ) : Prom
     }
 }
 
+export const readAddressFromTransaction = async ( signature: string, time = environment.solana.transactions.default.time ) : Promise<string | null > => {
+    const transac = await connection.getTransaction(signature);
+    if ( ( Math.floor( (Date.now()/1000) -  transac?.blockTime! )) <= time ){
+            return transac?.transaction.message.accountKeys[0]!.toString()! ;
+    }else{
+        throw Error('The transaction is not valid.')
+    }
+}
+
 /**
  * Verify if the transaction respect the conditions of ammount, time and addresses
  * By default, the transaction shoul re
@@ -51,4 +63,22 @@ export const readAndVerifySimpleTransferTransaction = async (
         }else{
             throw Error('The transaction is not valid.')
         }
+}
+
+export const verifyMessage = async ( address : string, signature : string, message : string ) : Promise<boolean>=> {
+
+    const messageBytes = new TextEncoder().encode(message);    
+    const publicKeyBytes = bs58.decode(address);
+    const signatureBytes = bs58.decode(signature);
+    const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+    
+    console.log('result', result) ;
+
+    return result ;
+
+    if (!result) {
+      console.log(`authentication failed`);
+      throw new Error("user can not be authenticated");
+    }
+
 }

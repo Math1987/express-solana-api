@@ -1,5 +1,5 @@
 {
-  "exclude": ["**/spec.*","**/*.spec.ts"],
+  "exclude": ["**/spec.*","**/*.spec.ts", "test/**"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 

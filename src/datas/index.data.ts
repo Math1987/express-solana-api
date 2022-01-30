@@ -1,6 +1,9 @@
 import mongoose from "mongoose" ; 
 import environment from "../environment" ;
 import { init as initExample } from "./example.data" ;
+import { init as initUser } from "./user.data" ;
+import { init as initSession } from "./session.data" ;
+
 
 export let db : mongoose.Connection ;
 /**
@@ -12,9 +15,9 @@ export let db : mongoose.Connection ;
 export const init = async (): Promise<mongoose.Connection> => {
 
     db = await mongoose.createConnection(environment.db) ;
-    //load your collections 
-    //exemple db.model("user", userSchema)
-    initExample(db)
+    initExample(db);
+    initUser(db);
+    initSession(db);
     return db ;
 
 }
@@ -32,6 +35,7 @@ export const reset = async (): Promise<boolean> => {
         await init();
     }
     await db.dropDatabase() ;
+    await db.syncIndexes();
     await mongoose.disconnect();
     await init();
 

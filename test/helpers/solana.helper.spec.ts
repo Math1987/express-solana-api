@@ -1,4 +1,4 @@
-import {connect} from "./../../../solana-api/src/engine/solana.engine" ;
+import {connect} from "./../../src/engine/solana.engine" ;
 import { initKeypairs } from "./solana.helper" ;
 
 /**
@@ -8,6 +8,5 @@ before( async ()=> {
 
     await connect();
     await initKeypairs();
-    console.log('connected on solana cluster');
 
 });

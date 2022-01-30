@@ -1,9 +1,10 @@
 import { expect } from "chai" ;
 import { keypair1, keypair2, makeTransaction } from "../helpers/solana.helper" ;
-import { connection, readSimpleTransferTransaction, readAndVerifySimpleTransferTransaction } from "./../../../solana-api/src/engine/solana.engine" ;
+import { connection, readSimpleTransferTransaction, readAndVerifySimpleTransferTransaction } from "../../src/engine/solana.engine" ;
 import * as web3 from "@solana/web3.js" ;
+import { describe } from "mocha";
 
-//MXZON ACCOUNT ADDRESS
+//ADDRESS
 //FfYeVASAm2nDzcC5ckorecT1u8ybFwrCZnMi8sXrtf3P
 
 //ADRESS HK5qCeciMuzmXQAFnKjSiDQSHowvbRWEvrKPsW6SUxbA
@@ -26,8 +27,7 @@ describe('solana.helper', () => {
 
 });
 
-
-describe('solana.engine verify transaction', () => {
+describe('api.solana verify transaction', () => {
 
     let transaction1 : string ;
     const transaction1Sols = 0.01 ;
@@ -73,4 +73,3 @@ describe('solana.engine verify transaction', () => {
         }
     });
 });
-

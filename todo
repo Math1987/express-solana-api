@@ -1,0 +1,20 @@
+Système d'authentification
+
+
+requête connect.
+Crée, sauvegarde en db et renvoie un token avec Auth = false en value associée en db
+
+authentification /user/connect
+si token isAuth === false && pas de message signé :
+renvoie un message "Sign this message if you are you the owner of this address to access to your account." 
+si token isAuth === true && message signé 
+vérifie message === message envoyé
+si oui, modifie en base de donnée isAuth = true
+
+modlewear verifyAuthorization
+si un token, lire ce token en midlewear et ajouter les infos du user
+readToken => mongodb fetch token => retunr infos like 
+isAuth : false,
+address : 
+views : 4
+

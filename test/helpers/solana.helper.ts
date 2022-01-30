@@ -2,7 +2,7 @@ import * as web3 from "@solana/web3.js" ;
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import fs from "fs" ;
 import path from "path" ;
-import {connection} from "./../../../solana-api/src/engine/solana.engine" ;
+import {connection} from "./../../src/engine/solana.engine";
 
 export let keypair1 : web3.Keypair ;
 export let keypair2 : web3.Keypair ;
@@ -58,4 +58,43 @@ export const makeTransaction = async ( fromKeypair : web3.Keypair, toPublicKey :
         [fromKeypair]
     );
     return signature ;
+}
+
+export const makeEmptyTransaction = async ( fromKeypair : web3.Keypair) : Promise<string> => {
+
+    let signer : web3.Signer = { 
+        publicKey: fromKeypair.publicKey,
+        secretKey: fromKeypair.secretKey,
+    };
+    const transac = new web3.Transaction();
+    const blockHash = await connection.getRecentBlockhash();
+    transac.recentBlockhash = blockHash.blockhash ;
+    transac.sign(signer);
+    const signature = await connection.sendRawTransaction(transac.serialize());
+    await connection.confirmTransaction(signature) ;
+    return signature ;
+
+}
+export const signMessage = async ( fromKeypair : web3.Keypair ) : Promise<string> => {
+
+//     const h : web3.MessageHeader = {
+//         numReadonlySignedAccounts: 1, numReadonlyUnsignedAccounts: 1, numRequiredSignatures: 1 
+//    };
+//    const blockHash = await connection.getRecentBlockhash();
+//    const compiledInstructions : web3.CompiledInstruction = {
+
+//    };
+
+//     const args : web3.MessageArgs = {
+//         header: h,
+//         accountKeys : ["FfYeVASAm2nDzcC5ckorecT1u8ybFwrCZnMi8sXrtf3P"],
+//         recentBlockhash : blockHash.blockhash,
+//         instructions : compiledInstructions
+//     }
+
+//     const message = new web3.Message( ["FfYeVASAm2nDzcC5ckorecT1u8ybFwrCZnMi8sXrtf3P"], 
+//     );
+
+    return "" ;
+
 }

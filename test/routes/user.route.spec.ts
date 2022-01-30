@@ -46,19 +46,42 @@ describe('user route', () => {
             })
             .end( ( err, res) => {
                 expect(res.statusCode).equal(200) ;
+                console.log('token', res.body.toke);
+                token = res.body.token ;
                 expect( typeof res.body.token).equal("string") ;
                 done();
                 });
     });
 
-    // it("get : should return a token.", done => {
-    //     req
-    //         .post(`/user/get`)
-    //         .end( ( err, res) => {
-    //             expect(res.statusCode).equal(401) ;
-    //             done();
-    //             });
-    // });
+
+    it("connect : should return a statusCode 401.", done => {
+        req
+            .get(`/user/get`)
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(401) ;
+                done();
+                });
+    });
+    it("connect : should return a statusCode 401.", done => {
+        req
+            .get(`/user/get`)
+            .set('authorization', "BONJOUR!Je suis gentil.")
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(401) ;
+                done();
+                });
+    });
+
+    it("connect : should return a user.", done => {
+        req
+            .get(`/user/get`)
+            .set('authorization', token)
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(200) ;
+                expect(res.body.address).equal("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD");
+                done();
+            });
+    });
 
     // it("get : should return a token.", done => {
     //     req

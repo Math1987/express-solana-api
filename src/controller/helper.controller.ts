@@ -1,9 +1,13 @@
 // import { PublicKey, Transaction } from "@solana/web3.js" ;
+import { Request } from "express";
 import { ObjectId } from "mongodb" ;
+import { typeInDB as user } from "datas/user.data";
 
 /**
  * NOTE : THOSES HELPERS SHOULD BE UPGRATED !
  */
+
+export type requestWithUser = Request & { user : user } ;
 
 
 export const gotBody = ( object : any ) : boolean => {

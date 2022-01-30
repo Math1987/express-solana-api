@@ -72,8 +72,6 @@ export const verifyMessage = async ( address : string, signature : string, messa
     const signatureBytes = bs58.decode(signature);
     const result = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
     
-    console.log('result', result) ;
-
     return result ;
 
     if (!result) {

@@ -20,11 +20,14 @@ route.post('/connect', connect);
  * read the authorization token in header and verify if this is a valid token in db
  * if yes, continue the routes, else sens codeStatus 401
  */
-route.use('/verifyAuthorization', verifyAuthorization);
+//@ts-ignore
+route.use(verifyAuthorization);
 
-
+//@ts-ignore
 route.get('/get', get);
+//@ts-ignore
 route.post('/update', update);
+//@ts-ignore
 route.post('/remove', remove);
 
 

@@ -2,6 +2,7 @@ import { readOneByAddress, updateOne, removeOne, create, typeInDB as user } from
 import { verifyMessage, readAddressFromTransaction } from "./solana.engine" ;
 import { getMessageSample } from "./message.engine" ;
 import { createToken, readToken } from "../config/jwt.config" ;
+import { ObjectId } from "mongodb";
 
 export const connect = async ( address : string, signedMessage : string ) : Promise<{ user : any, token : string}> => {
     
@@ -33,19 +34,24 @@ export const getUserFromToken = async ( token : string ) : Promise<user> => {
 
 }
 
-export const udpateUser = async ( signature : string, datas : any ) => {
-    const address = await readAddressFromTransaction(signature);
-    const user = await readOneByAddress(address!);
-    if ( !user ){
-        return await create({ address, ...datas});
+export const udpateUser = async ( user : user, messageSignature : string, datas : any ) => {
+
+    const message = await getMessageSample(1);
+    const verified = await verifyMessage(user.address, messageSignature, message );
+    if ( verified ) {
+        const newUser = await updateOne(user?._id, datas);
+        return newUser ;
     }else{
-        return await updateOne(user?._id, datas);
+        return false ;
     }
 }
 
-export const removeUser = async ( signature : string ) : Promise<boolean> => {
-    const address = await readAddressFromTransaction(signature);
-    const user = await readOneByAddress(address!);
-    const remove = await removeOne(user!._id);
-    return true ;
+export const removeUser = async ( user : user , messageSignature : string ) : Promise<boolean> => {
+    const message = await getMessageSample(2);
+    const verified = await verifyMessage(user.address, messageSignature, message );
+    if ( verified ) {
+        await removeOne(user._id);
+        return true ;
+    }
+    return false ;
 }

@@ -83,16 +83,48 @@ describe('user route', () => {
             });
     });
 
-    // it("get : should return a token.", done => {
-    //     req
-    //         .post(`/user/get`)
-    //         .set('authorization', token )
-    //         .end( ( err, res) => {
-    //             expect(res.statusCode).equal(200) ;
-    //             done();
-    //             });
-    // });
+    it("update : should return the user updated", done => {
+        request(app)
+        .post('/user/update')
+        .set('authorization', token)
+        .send( {
+            signedMessage : "m9xiePo8rEF7gcYDGgEurHLKG4Xpb18VUD8wJD7x1CQXuReaJTarWZEk6fkayxsf3Lwpj6JcnZ4qFSYYny31mgg",
+            datas : {
+                pseudo : "Hello World!"
+            }
+        })
+        .end( ( err, res) => {
+            expect(res.statusCode).equal(200) ;
+            expect(res.body.address).equal('9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD');
+            expect(res.body.pseudo).equal("Hello World!") ;
 
+            done();
+        });
+    });
+
+    
+    it("remove : should remove the user", done => {
+        request(app)
+        .post('/user/remove')
+        .set('authorization', token)
+        .send( {
+            signedMessage : "43vwxzjoSL5CxEitZi1SgFBHu3jmHKHB3mvohCwLPjteCHDvsxPJcoyVCy5ABtAG2XbXbiuvKHKGfNsxJXiF3PEp"
+        })
+        .end( ( err, res) => {
+            expect(res.statusCode).equal(200) ;
+            done();
+        });
+    });
+
+    it("connect : should return statuscode 401.", done => {
+        req
+            .get(`/user/get`)
+            .set('authorization', token)
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(401) ;
+                done();
+            });
+    });
 
 });
 

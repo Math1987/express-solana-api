@@ -81,10 +81,11 @@ export const get = async ( req : requestWithUser, res : Response ) => {
     //     res.status(400).send();
     // }
 }
-export const update = async ( req : Request, res : Response ) => {
-    if ( gotBody(req) && req.body.signature && isSolanaTransactionSignature(req.body.signature) ){
+export const update = async ( req : requestWithUser, res : Response ) => {
+    console.log('update controller.')
+    if ( gotBody(req) && req.body.signedMessage && isSolanaTransactionSignature(req.body.signedMessage) ){
         try{
-            const user = await udpateUser(req.body.signature, req.body.datas);
+            const user = await udpateUser(req.user, req.body.signedMessage, req.body.datas);
             res.status(200).send(preparBodyForSend(user));
         }catch(err){
             res.status(401).send();
@@ -93,11 +94,11 @@ export const update = async ( req : Request, res : Response ) => {
         res.status(400).send();
     }
 }
-export const remove = async ( req : Request, res : Response ) => {
-    if ( gotBody(req) && req.body.signature && isSolanaTransactionSignature(req.body.signature) ){
+export const remove = async ( req : requestWithUser, res : Response ) => {
+    if ( gotBody(req) && req.body.signedMessage && isSolanaTransactionSignature(req.body.signedMessage) ){
         try{
-            await removeUser(req.body.signature);
-            res.status(200).send(preparBodyForSend({success : true}));
+            await removeUser(req.user, req.body.signedMessage);
+            res.status(200).send({success : true});
         }catch(err){
             res.status(401).send();
         }
@@ -105,6 +106,9 @@ export const remove = async ( req : Request, res : Response ) => {
         res.status(400).send();
     }
 }
+
+
+
 export const play = ( req : Request, res : Response ) => {
     res.status(400).send();
 }

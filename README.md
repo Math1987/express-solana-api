@@ -1,37 +1,60 @@
-# SOLANA API
+# SOLANA AUTH API
 
 This is a [typscript](https://www.typescriptlang.org/) base project with [mongodb](https://www.mongodb.com/), [express](https://expressjs.com/fr/), [solana](https://docs.solana.com/developing/clients/javascript-api) and [mocha](https://mochajs.org/) tests.
-<br>It provide a CRUD for users with Solana address as primary index.
+<br>It provide a CRUD for users with Solana address as primary index and Auth system with [JWT]('https://www.npmjs.com/package/jsonwebtoken').
+<br>
 
-# Routes
+## Principle
+
+The user have to send signed messages matching with the know messages of the server and him public address to access or modify him account datas.
+<br>
+
+## Routes
 <ul>
-<li><strong>GET /user/get</strong></li>
-    <em>required params : address (as string from Solana publicKey).
-    <br>response : an user object in body (with address, _id, pseudo?).</em>
 
+<li><strong>GET /messageSample</strong></li>
+    <em>required params (optional): code ( as number ).
+    <br>response (json) => message : string .</em>
+<br>
+<br>
+
+
+<li><strong>POST /user/connect</strong></li>
+    <em>required body :
+    <ul>
+        <li>signedMessage : a string representing the messageSample (code 0) signed by the owner of Solana address.</li>
+        <li>address : the solana pubkey address as string.
+    </ul>
+        response (json) => user : User, token : string</em>
+<br>
+<br>
+
+
+<li><strong>GET /user/get</strong></li>
+    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <br>response (json) => User </em>
+<br>
 <br>
 
 <li><strong>POST /user/update</strong></li>
-    <em>required body :
+    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <br>required body :
     <ul>
-        <li>signature : a string representing a recent solana transaction signature (containing the concerned address).</li>
+        <li>signedMessage : a string representing the messageSample (code 1) signed by the owner of Solana address.</li>
         <li>datas : an object with custom datas to create or update an user.
     </ul>
-        response : an user object in body (with address, _id, pseudo?).</em>
+        response (json) => an user object in body (with address, _id, pseudo?).</em>
 
 <br>
 
 <li><strong>POST /user/remove</strong></li>
-    <em>required body : signature : a string representing a recent solana transaction signature (containing the concerned address).
-    <br>response : status 200 with success : true in body.</em>
+    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <em>required body : signedMessage : a string representing the messageSample (code 2) signed by the owner of Solana address.
+    <br>response (json) => status 200 with success : true in body.</em>
 </ul>
-
-
-
 <br>
 
-<em>Note: the update function also create a new user if not exist.</em>
-<br><em>The client need to make an empty transaction (cost 0.00005 sol) on the update and remove function, to proove that he own the account.
+<em>Note: the connect call also create a new user if not exist (and if signed message is correct and correspond to the address).</em>
 <br>
 </em>
 

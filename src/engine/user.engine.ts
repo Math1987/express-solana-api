@@ -2,7 +2,6 @@ import { readOneByAddress, updateOne, removeOne, create, typeInDB as user } from
 import { verifyMessage, readAddressFromTransaction } from "./solana.engine" ;
 import { getMessageSample } from "./message.engine" ;
 import { createToken, readToken } from "../config/jwt.config" ;
-import { ObjectId } from "mongodb";
 
 export const connect = async ( address : string, signedMessage : string ) : Promise<{ user : any, token : string}> => {
     

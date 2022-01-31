@@ -44,8 +44,8 @@ The user have to send signed messages matching with the know messages of the ser
         <li>datas : an object with custom datas to create or update an user.
     </ul>
         response (json) => an user object in body (with address, _id, pseudo?).</em>
-
 <br>
+<br>  
 
 <li><strong>POST /user/remove</strong></li>
     <em>required header : the authorisation field with the token sended in connect.

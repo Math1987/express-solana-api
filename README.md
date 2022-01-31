@@ -31,13 +31,13 @@ The user have to send signed messages matching with the know messages of the ser
 
 
 <li><strong>GET /user/get</strong></li>
-    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <em>required header : the authorisation field with the token sended in connect.
     <br>response (json) => User </em>
 <br>
 <br>
 
 <li><strong>POST /user/update</strong></li>
-    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <em>required header : the authorisation field with the token sended in connect.
     <br>required body :
     <ul>
         <li>signedMessage : a string representing the messageSample (code 1) signed by the owner of Solana address.</li>
@@ -48,7 +48,7 @@ The user have to send signed messages matching with the know messages of the ser
 <br>
 
 <li><strong>POST /user/remove</strong></li>
-    <em>required header : the authorisation field with the token sended in connect call ( as string )
+    <em>required header : the authorisation field with the token sended in connect.
     <em>required body : signedMessage : a string representing the messageSample (code 2) signed by the owner of Solana address.
     <br>response (json) => status 200 with success : true in body.</em>
 </ul>

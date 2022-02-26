@@ -42,6 +42,8 @@ describe('user route', () => {
         expect(nounceD![0].message).equals("I am the owner of this address.\nmessageId:" + nonce);
 
     });
+    //IMPOSSIBLE TO VERIFY THE CONNECTION WITH A SIGNATURE ACTUALY
+    //NEXT TEST WILL VERIFY WITH A SIGNATURE MADE WITH PHANTOM WALLET
 
 
     let fakeMessage = "I am the owner of this address.\nmessageId:uo8cfAuqZMc" ;
@@ -53,6 +55,14 @@ describe('user route', () => {
         const r = await readMessage({ address: "9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD", message : fakeMessage });
         expect(r!.message).equals(fakeMessage);
         expect(r!.address).equals("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD");
+
+    });
+
+
+    it('readMessage lenght of array should return 2', async () => {
+
+        const messages = await readMessages("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD");
+        expect(messages.length).equals(2);
 
     });
 
@@ -72,7 +82,14 @@ describe('user route', () => {
                 done();
             });
     });
+    
 
+    it('readMessage lenght of array should return 1', async () => {
+
+        const messages = await readMessages("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD");
+        expect(messages.length).equals(1);
+
+    });
 
 
     it("connect : should fail and return statusCode 401.", done => {

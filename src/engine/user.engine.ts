@@ -2,7 +2,7 @@ import { readOneByAddress, updateOne, removeOne, create, typeInDB as user } from
 import { verifyMessage, readAddressFromTransaction } from "./solana.engine" ;
 import { getMessageSample } from "./message.engine" ;
 import { createToken, readToken } from "../config/jwt.config" ;
-import { readByAddress as readMessages } from "./../datas/message.data";
+import { readByAddress as readMessages, removeOne as removeMessage } from "./../datas/message.data";
 
 /**
  * connect by reading a signed message by the user
@@ -24,6 +24,9 @@ export const connect = async ( address : string, signedMessage : string ) : Prom
             const m = (o.message as String).replace(/\\n/g, '\n') ;
             verified = verifyMessage( address, signedMessage, m );
             if ( verified ){
+
+                await removeMessage(o._id);
+
                 break ;
             }
         }

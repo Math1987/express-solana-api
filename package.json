@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --module es6 --outDir ../server/src/solana-api",
-    "dev": "tsc --module es6 --outDir ../server/src/solana-api && cp -R ../server/src/* ../server/prod && ../server/node_modules ../server/src -d ../server/prod",
+    "dev": "tsc --outDir ./dist && node ./dist/index.js",
+    "devServer": "tsc --module es6 --outDir ../server/src/solana-api && cp -R ../server/src/* ../server/prod && ../server/node_modules ../server/src -d ../server/prod",
     "test": "MODE=test mocha --timeout=60000 --check-leaks -r tsconfig-paths/register -r ts-node/register \"test/**/*.spec.ts\" --exclude \"test/**/solana/*.spec.ts\"",
     "testSolana": "MODE=test mocha --timeout=60000 --check-leaks -r tsconfig-paths/register -r ts-node/register \"test/**/*solana*.spec.ts\"",
     "testRoutes": "MODE=test mocha --timeout=60000 --check-leaks -r tsconfig-paths/register -r ts-node/register \"test/**/*.route.spec.ts\""
@@ -49,7 +50,6 @@
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "mongoose": "^6.1.6",
-    
     "jsonwebtoken": "^8.5.1",
     "bs58": "^4.0.1",
     "tweetnacl": "^1.0.3"

@@ -25,5 +25,9 @@ app.get('/', (req, res) =>{
 app.use(messageRoute);
 app.use( "/user", userRoute );
 
+if ( environment.mode === "dev" ){
+    app.listen(17000);
+}
+
 export default app ;
 

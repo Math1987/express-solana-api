@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,14 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.removeOne = exports.updateOneById = exports.incrementViews = exports.readOneByHash = exports.readOne = exports.create = exports.init = exports.schema = void 0;
+exports.incrementViews = exports.readOneByToken = exports.create = exports.init = exports.schema = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 var db = null;
 exports.schema = new mongoose_1["default"].Schema({
-    cookie_id: { type: String, index: true, unique: true },
-    cookie_hash: { type: String, index: true },
+    token: { type: String, index: true, unique: true },
     address: { type: String, required: false },
-    isAuth: { type: Boolean },
     views: { type: Number }
 });
 var model;
@@ -75,50 +62,21 @@ var create = function (datas) { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.create = create;
-var readOne = function (_id) { return __awaiter(void 0, void 0, void 0, function () {
+var readOneByToken = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, model.findOne({ _id: _id })];
+            case 0: return [4 /*yield*/, model.findOne({ token: token })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.readOne = readOne;
-var readOneByHash = function (hash) { return __awaiter(void 0, void 0, void 0, function () {
+exports.readOneByToken = readOneByToken;
+var incrementViews = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, model.findOne({ cookie_hash: hash })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.readOneByHash = readOneByHash;
-var incrementViews = function (cookie_id) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, model.findOneAndUpdate({ cookie_id: cookie_id }, { $inc: { views: 1 } }, { returnOriginal: false })];
+            case 0: return [4 /*yield*/, model.findOneAndUpdate({ token: token }, { $inc: { views: 1 } }, { returnOriginal: false })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.incrementViews = incrementViews;
-var updateOneById = function (cookie_id, datas) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, model.findOneAndUpdate({ cookie_id: cookie_id }, { $set: __assign({}, datas) }, { returnOriginal: false })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.updateOneById = updateOneById;
-var removeOne = function (_id) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, model.deleteOne({ _id: _id })];
-            case 1:
-                _a.sent();
-                return [2 /*return*/, true];
-        }
-    });
-}); };
-exports.removeOne = removeOne;

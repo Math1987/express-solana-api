@@ -39,9 +39,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.readAndVerifySimpleTransferTransaction = exports.readAddressFromTransaction = exports.readSimpleTransferTransaction = exports.connect = exports.connection = void 0;
+exports.verifyMessage = exports.readAndVerifySimpleTransferTransaction = exports.readAddressFromTransaction = exports.readSimpleTransferTransaction = exports.connect = exports.connection = void 0;
 var web3_js_1 = require("@solana/web3.js");
 var environment_1 = __importDefault(require("../environment"));
+var bs58_1 = __importDefault(require("bs58"));
+var tweetnacl_1 = __importDefault(require("tweetnacl"));
 var connect = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -128,3 +130,14 @@ var readAndVerifySimpleTransferTransaction = function (signature, ammount, recei
     });
 };
 exports.readAndVerifySimpleTransferTransaction = readAndVerifySimpleTransferTransaction;
+var verifyMessage = function (address, signature, message) { return __awaiter(void 0, void 0, void 0, function () {
+    var messageBytes, publicKeyBytes, signatureBytes, result;
+    return __generator(this, function (_a) {
+        messageBytes = new TextEncoder().encode(message);
+        publicKeyBytes = bs58_1["default"].decode(address);
+        signatureBytes = bs58_1["default"].decode(signature);
+        result = tweetnacl_1["default"].sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+        return [2 /*return*/, result];
+    });
+}); };
+exports.verifyMessage = verifyMessage;

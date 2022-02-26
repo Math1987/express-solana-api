@@ -1,11 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.preparBodyForSend = exports.isMongoId = exports.isPseudo = exports.isSolanaTransactionSignature = exports.isSolanaAddress = exports.gotBody = void 0;
-// import { PublicKey, Transaction } from "@solana/web3.js" ;
 var mongodb_1 = require("mongodb");
-/**
- * NOTE : THOSES HELPERS SHOULD BE UPGRATED !
- */
 var gotBody = function (object) {
     return (typeof object === "object" && object.body) ? true : false;
 };

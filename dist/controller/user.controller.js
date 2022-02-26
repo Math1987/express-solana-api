@@ -36,73 +36,101 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.gameOver = exports.play = exports.remove = exports.update = exports.get = exports.signMessage = exports.createMessage = exports.useSession = void 0;
+exports.gameOver = exports.play = exports.remove = exports.update = exports.get = exports.verifyAuthorization = exports.connect = void 0;
 var helper_controller_1 = require("./helper.controller");
-var user_data_1 = require("../datas/user.data");
 var user_engine_1 = require("../engine/user.engine");
-var useSession = function (req, res, next) {
-    (0, user_engine_1.useSession)(req === null || req === void 0 ? void 0 : req.session);
-    next();
-};
-exports.useSession = useSession;
-var createMessage = function (req, res) {
-    res.status(400).send('No message found');
-};
-exports.createMessage = createMessage;
-var signMessage = function (req, res) {
-    res.status(400).send('No message found');
-};
-exports.signMessage = signMessage;
-var get = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, err_1;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var connect = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var datas, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                if (!(req.query && req.query.address && (0, helper_controller_1.isSolanaAddress)(req.query.address))) return [3 /*break*/, 5];
-                _b.label = 1;
+                if (!(req.body && req.body.address && req.body.signedMessage)) return [3 /*break*/, 5];
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, (0, user_data_1.readOneByAddress)((_a = req.query) === null || _a === void 0 ? void 0 : _a.address)];
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, (0, user_engine_1.connect)(req.body.address, req.body.signedMessage)];
             case 2:
-                user = _b.sent();
-                if (user && user['address']) {
-                    //@ts-ignore
-                    res.status(200).send((0, helper_controller_1.preparBodyForSend)(user));
-                }
-                else {
-                    res.status(400).send();
-                }
+                datas = _a.sent();
+                res.status(200).send(datas);
                 return [3 /*break*/, 4];
             case 3:
-                err_1 = _b.sent();
-                res.status(400).send();
+                e_1 = _a.sent();
+                res.status(401).send({
+                    error: "Authentification invalid."
+                });
                 return [3 /*break*/, 4];
             case 4: return [3 /*break*/, 6];
             case 5:
-                res.status(400).send();
-                _b.label = 6;
+                res.status(401).send({
+                    error: "Authentification invalid."
+                });
+                _a.label = 6;
             case 6: return [2 /*return*/];
         }
     });
 }); };
-exports.get = get;
-var update = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, err_2;
+exports.connect = connect;
+var verifyAuthorization = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (!((0, helper_controller_1.gotBody)(req) && req.body.signature && (0, helper_controller_1.isSolanaTransactionSignature)(req.body.signature))) return [3 /*break*/, 5];
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, (0, user_engine_1.getUserFromToken)(req.headers.authorization)];
+            case 1:
+                user = _a.sent();
+                if (user) {
+                    req.user = user;
+                    next();
+                }
+                else {
+                    res.status(401).send({ error: "No authorization." });
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                e_2 = _a.sent();
+                res.status(401).send({ error: "No authorization." });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.verifyAuthorization = verifyAuthorization;
+// export const createMessage = ( req: Request, res : Response ) => {
+//     res.status(400).send('No message found');
+// }
+// export const signMessage  = ( req: Request, res : Response ) => {
+//     res.status(400).send('No message found');
+// }
+var get = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        if (req.user) {
+            res.status(200).send(req.user);
+        }
+        else {
+            res.status(400).send();
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.get = get;
+var update = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log('update controller.');
+                if (!((0, helper_controller_1.gotBody)(req) && req.body.signedMessage && (0, helper_controller_1.isSolanaTransactionSignature)(req.body.signedMessage))) return [3 /*break*/, 5];
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, (0, user_engine_1.udpateUser)(req.body.signature, req.body.datas)];
+                return [4 /*yield*/, (0, user_engine_1.udpateUser)(req.user, req.body.signedMessage, req.body.datas)];
             case 2:
                 user = _a.sent();
                 res.status(200).send((0, helper_controller_1.preparBodyForSend)(user));
                 return [3 /*break*/, 4];
             case 3:
-                err_2 = _a.sent();
+                err_1 = _a.sent();
                 res.status(401).send();
                 return [3 /*break*/, 4];
             case 4: return [3 /*break*/, 6];
@@ -115,21 +143,21 @@ var update = function (req, res) { return __awaiter(void 0, void 0, void 0, func
 }); };
 exports.update = update;
 var remove = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var err_3;
+    var err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (!((0, helper_controller_1.gotBody)(req) && req.body.signature && (0, helper_controller_1.isSolanaTransactionSignature)(req.body.signature))) return [3 /*break*/, 5];
+                if (!((0, helper_controller_1.gotBody)(req) && req.body.signedMessage && (0, helper_controller_1.isSolanaTransactionSignature)(req.body.signedMessage))) return [3 /*break*/, 5];
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, (0, user_engine_1.removeUser)(req.body.signature)];
+                return [4 /*yield*/, (0, user_engine_1.removeUser)(req.user, req.body.signedMessage)];
             case 2:
                 _a.sent();
-                res.status(200).send((0, helper_controller_1.preparBodyForSend)({ success: true }));
+                res.status(200).send({ success: true });
                 return [3 /*break*/, 4];
             case 3:
-                err_3 = _a.sent();
+                err_2 = _a.sent();
                 res.status(401).send();
                 return [3 /*break*/, 4];
             case 4: return [3 /*break*/, 6];

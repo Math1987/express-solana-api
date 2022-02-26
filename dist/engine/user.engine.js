@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,110 +36,97 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.removeUser = exports.udpateUser = exports.executeMessage = exports.createMessage = exports.useSession = void 0;
+exports.removeUser = exports.udpateUser = exports.getUserFromToken = exports.connect = void 0;
 var user_data_1 = require("../datas/user.data");
 var solana_engine_1 = require("./solana.engine");
-var session_data_1 = require("../datas/session.data");
-// import { Request } from "express";
-/**
- * Authentificate the user and update the db if success
- * with isAuth : true
- *
- * @param session the cookie
- */
-var authentificate = function (session) {
-};
-/**
- * Store the session.id and increment views in db
- *
- * @param session
- */
-var useSession = function (session) {
-    console.log('session', session);
-    (0, session_data_1.create)({
-        cookie_id: session.id,
-        views: 1,
-        cookie_hash: session.id,
-        isAuth: false
-    })
-        .then(function (res) {
-        // console.log(res)
-    })["catch"](function (err) {
-        if (err && err.code === 11000) {
-            (0, session_data_1.incrementViews)(session.id);
-        }
-    });
-};
-exports.useSession = useSession;
-/**
- * Create a message from the code if know.
- * add the code and the cookie_ID hashed at the end.
- *
- * @param code
- * @param cookie_id
- * @returns
- */
-var createMessage = function (code, cookie_id) {
-    if (code === void 0) { code = 1; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (code === 1) {
-                return [2 /*return*/, "Authentificate yourself." + code + " " + cookie_id];
-                ;
-            }
-            return [2 /*return*/, false];
-        });
-    });
-};
-exports.createMessage = createMessage;
-/**
- * 1 - check if the code is know
- * 2 - check if the hash is corresponding to the cookie id
- * 3 - run the instruction depending of code (ex : code 1 = authentificate)
- *
- * @param code
- * @param cookie_id
- * @returns
- */
-var executeMessage = function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, false];
-    });
-}); };
-exports.executeMessage = executeMessage;
-var udpateUser = function (signature, datas) { return __awaiter(void 0, void 0, void 0, function () {
-    var address, user;
+var message_engine_1 = require("./message.engine");
+var jwt_config_1 = require("../config/jwt.config");
+var connect = function (address, signedMessage) { return __awaiter(void 0, void 0, void 0, function () {
+    var messageSample, token, user, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, solana_engine_1.readAddressFromTransaction)(signature)];
+            case 0:
+                _a.trys.push([0, 8, , 9]);
+                return [4 /*yield*/, (0, message_engine_1.getMessageSample)()];
             case 1:
-                address = _a.sent();
+                messageSample = _a.sent();
+                return [4 /*yield*/, (0, solana_engine_1.verifyMessage)(address, signedMessage, messageSample)];
+            case 2:
+                if (!_a.sent()) return [3 /*break*/, 6];
+                token = (0, jwt_config_1.createToken)({ address: address });
                 return [4 /*yield*/, (0, user_data_1.readOneByAddress)(address)];
+            case 3:
+                user = _a.sent();
+                if (!!user) return [3 /*break*/, 5];
+                return [4 /*yield*/, (0, user_data_1.create)({ address: address })];
+            case 4:
+                user = _a.sent();
+                _a.label = 5;
+            case 5: return [2 /*return*/, {
+                    user: user,
+                    token: token
+                }];
+            case 6: throw Error("Fail verifying message.");
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                e_1 = _a.sent();
+                throw Error("Fail connecting message.");
+            case 9: return [2 /*return*/];
+        }
+    });
+}); };
+exports.connect = connect;
+var getUserFromToken = function (token) { return __awaiter(void 0, void 0, void 0, function () {
+    var datas, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, jwt_config_1.readToken)(token)];
+            case 1:
+                datas = _a.sent();
+                return [4 /*yield*/, (0, user_data_1.readOneByAddress)(datas.address)];
             case 2:
                 user = _a.sent();
-                if (!!user) return [3 /*break*/, 4];
-                return [4 /*yield*/, (0, user_data_1.create)(__assign({ address: address }, datas))];
-            case 3: return [2 /*return*/, _a.sent()];
-            case 4: return [4 /*yield*/, (0, user_data_1.updateOne)(user === null || user === void 0 ? void 0 : user._id, datas)];
-            case 5: return [2 /*return*/, _a.sent()];
+                return [2 /*return*/, user];
+        }
+    });
+}); };
+exports.getUserFromToken = getUserFromToken;
+var udpateUser = function (user, messageSignature, datas) { return __awaiter(void 0, void 0, void 0, function () {
+    var message, verified, newUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, message_engine_1.getMessageSample)(1)];
+            case 1:
+                message = _a.sent();
+                return [4 /*yield*/, (0, solana_engine_1.verifyMessage)(user.address, messageSignature, message)];
+            case 2:
+                verified = _a.sent();
+                if (!verified) return [3 /*break*/, 4];
+                return [4 /*yield*/, (0, user_data_1.updateOne)(user === null || user === void 0 ? void 0 : user._id, datas)];
+            case 3:
+                newUser = _a.sent();
+                return [2 /*return*/, newUser];
+            case 4: return [2 /*return*/, false];
         }
     });
 }); };
 exports.udpateUser = udpateUser;
-var removeUser = function (signature) { return __awaiter(void 0, void 0, void 0, function () {
-    var address, user, remove;
+var removeUser = function (user, messageSignature) { return __awaiter(void 0, void 0, void 0, function () {
+    var message, verified;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, solana_engine_1.readAddressFromTransaction)(signature)];
+            case 0: return [4 /*yield*/, (0, message_engine_1.getMessageSample)(2)];
             case 1:
-                address = _a.sent();
-                return [4 /*yield*/, (0, user_data_1.readOneByAddress)(address)];
+                message = _a.sent();
+                return [4 /*yield*/, (0, solana_engine_1.verifyMessage)(user.address, messageSignature, message)];
             case 2:
-                user = _a.sent();
+                verified = _a.sent();
+                if (!verified) return [3 /*break*/, 4];
                 return [4 /*yield*/, (0, user_data_1.removeOne)(user._id)];
             case 3:
-                remove = _a.sent();
+                _a.sent();
                 return [2 /*return*/, true];
+            case 4: return [2 /*return*/, false];
         }
     });
 }); };

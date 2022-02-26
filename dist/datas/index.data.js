@@ -42,7 +42,6 @@ exports.__esModule = true;
 exports.reset = exports.init = exports.db = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 var environment_1 = __importDefault(require("../environment"));
-var example_data_1 = require("./example.data");
 var user_data_1 = require("./user.data");
 var session_data_1 = require("./session.data");
 /**
@@ -57,7 +56,6 @@ var init = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 0: return [4 /*yield*/, mongoose_1["default"].createConnection(environment_1["default"].db)];
             case 1:
                 exports.db = _a.sent();
-                (0, example_data_1.init)(exports.db);
                 (0, user_data_1.init)(exports.db);
                 (0, session_data_1.init)(exports.db);
                 return [2 /*return*/, exports.db];

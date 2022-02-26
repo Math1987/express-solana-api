@@ -1,23 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
 var express_1 = require("express");
 var user_controller_1 = require("../controller/user.controller");
-var user_controller_2 = require("./../controller/user.controller");
-var express_session_1 = __importDefault(require("express-session"));
 var route = (0, express_1.Router)();
-route.use((0, express_session_1["default"])({
-    secret: "YOURAPISECRE",
-    saveUninitialized: false,
-    resave: false
-}));
-route.use(user_controller_2.useSession);
-route.get('/createMessage', user_controller_1.createMessage);
-route.post('/signMessage', user_controller_1.signMessage);
-//create a midewear to automaticly add the datas of the user feching in DB if isAuth = true in cookies
+/**
+ * need a signature of a message and a publicKey to attest that the user is the owner of the account solana
+ * if correct, send back a token, save it on db with associated values like address
+ */
+route.post('/connect', user_controller_1.connect);
+/**
+ * read the authorization token in header and verify if this is a valid token in db
+ * if yes, continue the routes, else sens codeStatus 401
+ */
+//@ts-ignore
+route.use(user_controller_1.verifyAuthorization);
+//@ts-ignore
 route.get('/get', user_controller_1.get);
+//@ts-ignore
 route.post('/update', user_controller_1.update);
+//@ts-ignore
 route.post('/remove', user_controller_1.remove);
 exports["default"] = route;

@@ -2,7 +2,8 @@ import { expect } from "chai" ;
 import app from "../../src/index" ;
 import request from "supertest" ;
 import { keypair1, makeEmptyTransaction } from "../helpers/solana.helper" ;
-
+import { getNonceFromMessage } from "../../src/engine/message.engine";
+import { create as createMessage, readByAddress as readMessages, readOneByDatas as readMessage } from "../../src/datas/message.data" ;
 
 describe('user route', () => {
 
@@ -20,6 +21,58 @@ describe('user route', () => {
                 done();
         });
     });
+
+    let nonce = "" ;
+    it('getMessageSample message sample with nonce', done => {
+        req
+            .get(`/messageSample?address=9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD`)
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(200) ;
+                nonce = getNonceFromMessage(res.body.message) ;
+                expect(getNonceFromMessage(res.body.message).length >= 4 ).equals(true) ;
+                expect(res.body.message.includes("I am the owner of this address.")).equal(true) ;
+                message = res.body.message ;
+                done();
+        });
+    });
+    it('readBounce should confirm that bounce is saved in db for a specific address.', async () => {
+        
+        //@ts-ignore 
+        const nounceD = await readMessages("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD") ;
+        expect(nounceD![0].message).equals("I am the owner of this address.\nmessageId:" + nonce);
+
+    });
+
+
+    let fakeMessage = "I am the owner of this address.\nmessageId:uo8cfAuqZMc" ;
+    let fakeNonceSignature = "4E92SFyu9zeXFKs5nqaY4QDL4eU2zAQFfbDqJUUHEKaemdQhS7T7451u4qNTvQb34VK2CkAu2qFZm9re7N7kJHwu" ;
+
+    it('create and read fake nonce', async () => {
+
+        await createMessage({ message : fakeMessage, address: "9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD"});
+        const r = await readMessage({ address: "9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD", message : fakeMessage });
+        expect(r!.message).equals(fakeMessage);
+        expect(r!.address).equals("9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD");
+
+    });
+
+
+    it("connect : should return a token from a connection with nonce.", done => {
+        req
+            .post(`/user/connect`)
+            .send({
+                address : "9LwYEYG7Y5UT9jUCc18J6CfvymcJKDQuTUGsLvqRakyD",
+                signedMessage : fakeNonceSignature
+            })
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(200) ;
+                console.log('token', res.body.toke);
+                token = res.body.token ;
+                expect( typeof res.body.token).equal("string") ;
+                done();
+            });
+    });
+
 
 
     it("connect : should fail and return statusCode 401.", done => {

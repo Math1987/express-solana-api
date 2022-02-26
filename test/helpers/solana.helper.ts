@@ -77,6 +77,7 @@ export const makeEmptyTransaction = async ( fromKeypair : web3.Keypair) : Promis
 }
 export const signMessage = async ( fromKeypair : web3.Keypair ) : Promise<string> => {
 
+
 //     const h : web3.MessageHeader = {
 //         numReadonlySignedAccounts: 1, numReadonlyUnsignedAccounts: 1, numRequiredSignatures: 1 
 //    };

@@ -2,6 +2,7 @@ import mongoose from "mongoose" ;
 import environment from "../environment" ;
 import { init as initUser } from "./user.data" ;
 import { init as initSession } from "./session.data" ;
+import { init as initMessage } from "./message.data" ;
 
 
 export let db : mongoose.Connection ;
@@ -16,6 +17,7 @@ export const init = async (): Promise<mongoose.Connection> => {
     db = await mongoose.createConnection(environment.db) ;
     initUser(db);
     initSession(db);
+    initMessage(db);
     return db ;
 
 }

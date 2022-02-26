@@ -65,7 +65,7 @@ export const readAndVerifySimpleTransferTransaction = async (
         }
 }
 
-export const verifyMessage = async ( address : string, signature : string, message : string ) : Promise<boolean>=> {
+export const verifyMessage = ( address : string, signature : string, message : string ) : boolean => {
 
     const messageBytes = new TextEncoder().encode(message);    
     const publicKeyBytes = bs58.decode(address);

@@ -45,13 +45,14 @@
   },
   "dependencies": {
     "@solana/web3.js": "^1.32.0",
+    "bs58": "^4.0.1",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
-    "mongoose": "^6.1.6",
     "jsonwebtoken": "^8.5.1",
-    "bs58": "^4.0.1",
+    "mongoose": "^6.1.6",
     "tweetnacl": "^1.0.3"
   }
 }

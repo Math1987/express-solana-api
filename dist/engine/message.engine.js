@@ -35,17 +35,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
-exports.getMessageSample = void 0;
-var getMessageSample = function (code) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        if (code === 1) {
-            return [2 /*return*/, "I want to update my datas in this website."];
-        }
-        else if (code === 2) {
-            return [2 /*return*/, "I want to delete my account on this website."];
-        }
-        return [2 /*return*/, "I am the owner of this address."];
+exports.getNonceFromMessage = exports.getMessageSample = void 0;
+var crypto_1 = __importDefault(require("crypto"));
+var message_data_1 = require("../datas/message.data");
+var getMessageSample = function (code, address) {
+    if (address === void 0) { address = null; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var message, n;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    message = "I am the owner of this address.";
+                    if (code === 1) {
+                        message = "I want to update my datas in this website.";
+                    }
+                    else if (code === 2) {
+                        message = "I want to delete my account on this website.";
+                    }
+                    if (!address) return [3 /*break*/, 2];
+                    n = crypto_1["default"].randomBytes(8).toString("base64");
+                    n = n.slice(0, n.length - 1);
+                    message += "\nmessageId:".concat(n);
+                    return [4 /*yield*/, (0, message_data_1.create)({ address: address, message: message })];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/, message];
+            }
+        });
     });
-}); };
+};
 exports.getMessageSample = getMessageSample;
+var getNonceFromMessage = function (message) {
+    var n = "";
+    if (message.includes('messageId:')) {
+        for (var i = 0; i < message.length; i++) {
+            if (message.slice(i - "messageId:".length, i) === "messageId:") {
+                n = message.slice(i, message.length);
+                break;
+            }
+        }
+    }
+    return n;
+};
+exports.getNonceFromMessage = getNonceFromMessage;

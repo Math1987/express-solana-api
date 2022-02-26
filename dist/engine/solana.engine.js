@@ -130,14 +130,15 @@ var readAndVerifySimpleTransferTransaction = function (signature, ammount, recei
     });
 };
 exports.readAndVerifySimpleTransferTransaction = readAndVerifySimpleTransferTransaction;
-var verifyMessage = function (address, signature, message) { return __awaiter(void 0, void 0, void 0, function () {
-    var messageBytes, publicKeyBytes, signatureBytes, result;
-    return __generator(this, function (_a) {
-        messageBytes = new TextEncoder().encode(message);
-        publicKeyBytes = bs58_1["default"].decode(address);
-        signatureBytes = bs58_1["default"].decode(signature);
-        result = tweetnacl_1["default"].sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
-        return [2 /*return*/, result];
-    });
-}); };
+var verifyMessage = function (address, signature, message) {
+    var messageBytes = new TextEncoder().encode(message);
+    var publicKeyBytes = bs58_1["default"].decode(address);
+    var signatureBytes = bs58_1["default"].decode(signature);
+    var result = tweetnacl_1["default"].sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+    return result;
+    if (!result) {
+        console.log("authentication failed");
+        throw new Error("user can not be authenticated");
+    }
+};
 exports.verifyMessage = verifyMessage;

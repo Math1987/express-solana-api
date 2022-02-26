@@ -44,6 +44,7 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var environment_1 = __importDefault(require("../environment"));
 var user_data_1 = require("./user.data");
 var session_data_1 = require("./session.data");
+var message_data_1 = require("./message.data");
 /**
  * Create a mongodb connection.
  * Load all the collections.
@@ -58,6 +59,7 @@ var init = function () { return __awaiter(void 0, void 0, void 0, function () {
                 exports.db = _a.sent();
                 (0, user_data_1.init)(exports.db);
                 (0, session_data_1.init)(exports.db);
+                (0, message_data_1.init)(exports.db);
                 return [2 /*return*/, exports.db];
         }
     });

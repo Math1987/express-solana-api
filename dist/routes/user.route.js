@@ -15,6 +15,8 @@ route.post('/connect', user_controller_1.connect);
 //@ts-ignore
 route.use(user_controller_1.verifyAuthorization);
 //@ts-ignore
+route.get('/refreshToken', user_controller_1.refreshToken);
+//@ts-ignore
 route.get('/get', user_controller_1.get);
 //@ts-ignore
 route.post('/update', user_controller_1.update);

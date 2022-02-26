@@ -13,7 +13,13 @@ import {
     readOneByAddress, 
 } from "../datas/user.data" ;
 
-import { connect as connectE, getUserFromToken, udpateUser, removeUser } from "../engine/user.engine" ;
+import { 
+    connect as connectE, 
+    getUserFromToken, 
+    udpateUser, 
+    removeUser,
+    refreshToken as refreshTokenE
+} from "../engine/user.engine" ;
 
 
 
@@ -31,6 +37,14 @@ export const connect = async (req : Request, res : Response, next : any ) => {
         res.status(401).send({
             error : "Authentification invalid."
         });
+    }
+}
+export const refreshToken = async (req : requestWithUser, res : Response ) => {
+    try{
+        const newToken = refreshTokenE(req.user);
+        res.status(200).send(newToken);
+    }catch( e ){
+        res.status(404).send({error : "Token refresh error."});
     }
 }
 export const verifyAuthorization = async (req : requestWithUser, res : Response, next : any ) => {

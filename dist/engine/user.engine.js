@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.removeUser = exports.udpateUser = exports.getUserFromToken = exports.connect = void 0;
+exports.removeUser = exports.udpateUser = exports.getUserFromToken = exports.refreshToken = exports.connect = void 0;
 var user_data_1 = require("../datas/user.data");
 var solana_engine_1 = require("./solana.engine");
 var message_engine_1 = require("./message.engine");
@@ -57,52 +57,64 @@ var connect = function (address, signedMessage) { return __awaiter(void 0, void 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 10, , 11]);
+                _a.trys.push([0, 14, , 15]);
                 return [4 /*yield*/, (0, message_data_1.readByAddress)(address)];
             case 1:
                 messages = _a.sent();
                 verified = false;
-                for (_i = 0, messages_1 = messages; _i < messages_1.length; _i++) {
-                    o = messages_1[_i];
-                    m = o.message.replace(/\\n/g, '\n');
-                    verified = (0, solana_engine_1.verifyMessage)(address, signedMessage, m);
-                    if (verified) {
-                        break;
-                    }
-                }
-                if (!!verified) return [3 /*break*/, 4];
-                return [4 /*yield*/, (0, message_engine_1.getMessageSample)()];
+                _i = 0, messages_1 = messages;
+                _a.label = 2;
             case 2:
+                if (!(_i < messages_1.length)) return [3 /*break*/, 5];
+                o = messages_1[_i];
+                m = o.message.replace(/\\n/g, '\n');
+                verified = (0, solana_engine_1.verifyMessage)(address, signedMessage, m);
+                if (!verified) return [3 /*break*/, 4];
+                return [4 /*yield*/, (0, message_data_1.removeOne)(o._id)];
+            case 3:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                _i++;
+                return [3 /*break*/, 2];
+            case 5:
+                if (!!verified) return [3 /*break*/, 8];
+                return [4 /*yield*/, (0, message_engine_1.getMessageSample)()];
+            case 6:
                 messageSample = _a.sent();
                 return [4 /*yield*/, (0, solana_engine_1.verifyMessage)(address, signedMessage, messageSample)];
-            case 3:
+            case 7:
                 verified = _a.sent();
-                _a.label = 4;
-            case 4:
-                if (!verified) return [3 /*break*/, 8];
+                _a.label = 8;
+            case 8:
+                if (!verified) return [3 /*break*/, 12];
                 token = (0, jwt_config_1.createToken)({ address: address });
                 return [4 /*yield*/, (0, user_data_1.readOneByAddress)(address)];
-            case 5:
+            case 9:
                 user = _a.sent();
-                if (!!user) return [3 /*break*/, 7];
+                if (!!user) return [3 /*break*/, 11];
                 return [4 /*yield*/, (0, user_data_1.create)({ address: address })];
-            case 6:
+            case 10:
                 user = _a.sent();
-                _a.label = 7;
-            case 7: return [2 /*return*/, {
+                _a.label = 11;
+            case 11: return [2 /*return*/, {
                     user: user,
                     token: token
                 }];
-            case 8: throw Error("Fail verifying message.");
-            case 9: return [3 /*break*/, 11];
-            case 10:
+            case 12: throw Error("Fail verifying message.");
+            case 13: return [3 /*break*/, 15];
+            case 14:
                 e_1 = _a.sent();
                 throw Error("Fail connecting message.");
-            case 11: return [2 /*return*/];
+            case 15: return [2 /*return*/];
         }
     });
 }); };
 exports.connect = connect;
+var refreshToken = function (user) {
+    return { token: (0, jwt_config_1.createToken)({ address: user.address }) };
+};
+exports.refreshToken = refreshToken;
 var getUserFromToken = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     var datas, user;
     return __generator(this, function (_a) {

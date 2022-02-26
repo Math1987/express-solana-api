@@ -153,10 +153,25 @@ describe('user route', () => {
             });
     });
 
+    let newToken = "" ;
+    it("connect : should return a new token.", done => {
+        req
+            .get(`/user/refreshToken`)
+            .set('authorization', token)
+            .end( ( err, res) => {
+                expect(res.statusCode).equal(200) ;
+                newToken = res.body.token ;
+                expect(res.body.token.length > 10).equal(true);
+                done();
+            });
+    });
+    
+
+
     it("update : should return the user updated", done => {
         request(app)
         .post('/user/update')
-        .set('authorization', token)
+        .set('authorization', newToken)
         .send( {
             signedMessage : "m9xiePo8rEF7gcYDGgEurHLKG4Xpb18VUD8wJD7x1CQXuReaJTarWZEk6fkayxsf3Lwpj6JcnZ4qFSYYny31mgg",
             datas : {
@@ -176,7 +191,7 @@ describe('user route', () => {
     it("remove : should remove the user", done => {
         request(app)
         .post('/user/remove')
-        .set('authorization', token)
+        .set('authorization', newToken)
         .send( {
             signedMessage : "43vwxzjoSL5CxEitZi1SgFBHu3jmHKHB3mvohCwLPjteCHDvsxPJcoyVCy5ABtAG2XbXbiuvKHKGfNsxJXiF3PEp"
         })
@@ -189,7 +204,7 @@ describe('user route', () => {
     it("connect : should return statuscode 401.", done => {
         req
             .get(`/user/get`)
-            .set('authorization', token)
+            .set('authorization', newToken)
             .end( ( err, res) => {
                 expect(res.statusCode).equal(401) ;
                 done();

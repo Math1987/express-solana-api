@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {
     connect,
+    refreshToken,
     verifyAuthorization,
     get, 
     update,
@@ -23,6 +24,8 @@ route.post('/connect', connect);
 //@ts-ignore
 route.use(verifyAuthorization);
 
+//@ts-ignore
+route.get('/refreshToken', refreshToken );
 //@ts-ignore
 route.get('/get', get);
 //@ts-ignore

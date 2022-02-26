@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.gameOver = exports.play = exports.remove = exports.update = exports.get = exports.verifyAuthorization = exports.connect = void 0;
+exports.gameOver = exports.play = exports.remove = exports.update = exports.get = exports.verifyAuthorization = exports.refreshToken = exports.connect = void 0;
 var helper_controller_1 = require("./helper.controller");
 var user_engine_1 = require("../engine/user.engine");
 var connect = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -70,6 +70,20 @@ var connect = function (req, res, next) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.connect = connect;
+var refreshToken = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var newToken;
+    return __generator(this, function (_a) {
+        try {
+            newToken = (0, user_engine_1.refreshToken)(req.user);
+            res.status(200).send(newToken);
+        }
+        catch (e) {
+            res.status(404).send({ error: "Token refresh error." });
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.refreshToken = refreshToken;
 var verifyAuthorization = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var user, e_2;
     return __generator(this, function (_a) {

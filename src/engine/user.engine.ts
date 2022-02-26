@@ -54,6 +54,9 @@ export const connect = async ( address : string, signedMessage : string ) : Prom
     }
     
 }
+export const refreshToken = ( user : user) : { token : string} => {
+    return { token : createToken({ address : user.address }) };
+}
 export const getUserFromToken = async ( token : string ) : Promise<user> => {
 
     const datas = await readToken(token) ;

@@ -5,7 +5,7 @@ import environment from "./environment" ;
 import express from "express";
 import userRoute from "./routes/user.route" ;
 import messageRoute from "./routes/message.route" ;
-
+import { runSocket } from "./socket/index" ;
 
 initDatas();
 
@@ -26,7 +26,11 @@ app.use(messageRoute);
 app.use( "/user", userRoute );
 
 if ( environment.mode === "dev" ){
-    app.listen(17000);
+
+    const server = require('http').createServer(app);
+    runSocket(server);
+    server.listen(17000);
+    
 }
 
 export default app ;

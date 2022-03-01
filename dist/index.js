@@ -10,6 +10,7 @@ var environment_1 = __importDefault(require("./environment"));
 var express_1 = __importDefault(require("express"));
 var user_route_1 = __importDefault(require("./routes/user.route"));
 var message_route_1 = __importDefault(require("./routes/message.route"));
+var index_1 = require("./socket/index");
 (0, index_data_1.init)();
 var app = (0, express_1["default"])();
 var corsOptions = {
@@ -24,6 +25,8 @@ app.get('/', function (req, res) {
 app.use(message_route_1["default"]);
 app.use("/user", user_route_1["default"]);
 if (environment_1["default"].mode === "dev") {
-    app.listen(17000);
+    var server = require('http').createServer(app);
+    (0, index_1.runSocket)(server);
+    server.listen(17000);
 }
 exports["default"] = app;
